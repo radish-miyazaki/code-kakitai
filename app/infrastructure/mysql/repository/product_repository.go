@@ -4,6 +4,8 @@ import (
 	"context"
 
 	productDomain "github.com/radish-miyazaki/code-kakitai/domain/product"
+	"github.com/radish-miyazaki/code-kakitai/infrastructure/mysql/db"
+	"github.com/radish-miyazaki/code-kakitai/infrastructure/mysql/db/db_gen"
 )
 
 type productRepository struct{}
@@ -13,6 +15,18 @@ func NewProductRepository() productDomain.ProductRepository {
 }
 
 func (r *productRepository) Save(ctx context.Context, product *productDomain.Product) error {
+	query := db.GetQuery(ctx)
+	if err := query.UpsertProduct(ctx, db_gen.UpsertProductParams{
+		ID:          product.ID(),
+		OwnerID:     product.OwnerID(),
+		Name:        product.Name(),
+		Description: product.Description(),
+		Price:       product.Price(),
+		Stock:       int32(product.Stock()),
+	}); err != nil {
+		return err
+	}
+
 	return nil
 }
 
