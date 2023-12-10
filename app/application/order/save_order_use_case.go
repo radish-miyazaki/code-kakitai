@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/radish-miyazaki/code-kakitai/application/transaction"
 	cartDomain "github.com/radish-miyazaki/code-kakitai/domain/cart"
 	errDomain "github.com/radish-miyazaki/code-kakitai/domain/error"
 	orderDomain "github.com/radish-miyazaki/code-kakitai/domain/order"
@@ -12,12 +13,18 @@ import (
 type SaveOrderUseCase struct {
 	orderDomainService orderDomain.OrderDomainService
 	cartRepo           cartDomain.CartRepository
+	transactionManager transaction.TransactionManager
 }
 
-func NewSaveOrderUseCase(orderDomainService orderDomain.OrderDomainService, cartRepo cartDomain.CartRepository) *SaveOrderUseCase {
+func NewSaveOrderUseCase(
+	orderDomainService orderDomain.OrderDomainService,
+	cartRepo cartDomain.CartRepository,
+	transactionManager transaction.TransactionManager,
+) *SaveOrderUseCase {
 	return &SaveOrderUseCase{
 		orderDomainService: orderDomainService,
 		cartRepo:           cartRepo,
+		transactionManager: transactionManager,
 	}
 }
 
@@ -32,8 +39,15 @@ func (uc *SaveOrderUseCase) Run(ctx context.Context, userID string, dtos []SaveO
 		return "", err
 	}
 
-	orderID, err := uc.orderDomainService.OrderProducts(ctx, cart, now)
-	if err != nil {
+	var orderID string
+	if err := uc.transactionManager.RunInTransaction(ctx, func(ctx context.Context) error {
+		orderID, err = uc.orderDomainService.OrderProducts(ctx, cart, now)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
 		return "", err
 	}
 

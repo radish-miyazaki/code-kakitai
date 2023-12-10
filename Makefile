@@ -1,3 +1,6 @@
+build:
+	docker compose build
+
 up:
 	docker compose up -d
 
@@ -8,7 +11,7 @@ gen:
 	docker compose exec app go generate ./...
 
 test:
-	docker compose exec app go test ./...
+	cd app && go test -v ./...
 
 lint:
 	docker compose exec app go vet ./...
@@ -18,3 +21,6 @@ tidy:
 
 sqlc-gen:
 	docker compose exec app sqlc generate
+
+swag:
+	docker compose exec app swag init --output ./docs/swagger

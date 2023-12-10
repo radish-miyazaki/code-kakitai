@@ -49,7 +49,6 @@ type Products struct {
 type Users struct {
 	ID          string `json:"id"`
 	Email       string `json:"email"`
-	Firebaseuid string `json:"firebaseuid"`
 	PhoneNumber string `json:"phone_number"`
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`

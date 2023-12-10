@@ -13,14 +13,14 @@ const (
 	nameLengthMin = 1
 	nameLengthMax = 255
 
-	PhoneNuumberDigitTen    = 10
-	PhoneNuumberDigitEleven = 11
+	PhoneNumberDigitTen    = 10
+	PhoneNumberDigitEleven = 11
 )
 
 var (
 	phoneNumberDigitMap = map[int]struct{}{
-		PhoneNuumberDigitTen:    {},
-		PhoneNuumberDigitEleven: {},
+		PhoneNumberDigitTen:    {},
+		PhoneNumberDigitEleven: {},
 	}
 )
 
@@ -85,4 +85,12 @@ func Reconstruct(id, email, phoneNumber, lastName, firstName string, address Add
 
 func NewUser(email, phoneNumber, lastName, firstName string, address Address) (*User, error) {
 	return newUser(ulid.NewULID(), email, phoneNumber, lastName, firstName, address)
+}
+
+func (u *User) ID() string {
+	return u.id
+}
+
+func (u *User) Email() string {
+	return u.email
 }

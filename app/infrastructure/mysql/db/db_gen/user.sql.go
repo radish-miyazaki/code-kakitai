@@ -88,7 +88,7 @@ func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) error {
 
 const userFindAll = `-- name: UserFindAll :many
 SELECT
-    id, email, firebaseuid, phone_number, first_name, last_name, postal_code, prefecture, city, address_extra, created_at, updated_at
+    id, email, phone_number, first_name, last_name, postal_code, prefecture, city, address_extra, created_at, updated_at
 FROM
     users
 `
@@ -105,7 +105,6 @@ func (q *Queries) UserFindAll(ctx context.Context) ([]Users, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.Email,
-			&i.Firebaseuid,
 			&i.PhoneNumber,
 			&i.FirstName,
 			&i.LastName,
@@ -131,7 +130,7 @@ func (q *Queries) UserFindAll(ctx context.Context) ([]Users, error) {
 
 const userFindByID = `-- name: UserFindByID :one
 SELECT
-    id, email, firebaseuid, phone_number, first_name, last_name, postal_code, prefecture, city, address_extra, created_at, updated_at
+    id, email, phone_number, first_name, last_name, postal_code, prefecture, city, address_extra, created_at, updated_at
 FROM
     users
 WHERE
@@ -144,7 +143,6 @@ func (q *Queries) UserFindByID(ctx context.Context, id string) (Users, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
-		&i.Firebaseuid,
 		&i.PhoneNumber,
 		&i.FirstName,
 		&i.LastName,

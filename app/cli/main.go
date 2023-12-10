@@ -17,7 +17,9 @@ func main() {
 				Usage: "migrate schema to database",
 				Action: func(ctx *cli.Context) error {
 					schemaFile := ctx.Args().Get(0)
-					return schema.Migrate(schemaFile)
+					dryRun := ctx.Args().Get(1) != "apply"
+
+					return schema.Migrate(schemaFile, dryRun)
 				},
 			},
 		},
